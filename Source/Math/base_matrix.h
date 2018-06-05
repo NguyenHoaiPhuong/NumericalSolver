@@ -12,7 +12,7 @@ namespace math
 
 	public:
 		// Constructor and Destructor
-		base_matrix(MPI_Comm comm = MPI_COMM_WORLD);
+		base_matrix(const MPI_Comm comm = MPI_COMM_WORLD);
 		virtual ~base_matrix();
 
 		virtual msize row_size() const;
@@ -28,5 +28,20 @@ namespace math
 	protected:
 		Int row_size_;
 		Int col_size_;
+	public:
+		// Constructor and Destructor
+		template_matrix(const MPI_Comm comm = MPI_COMM_WORLD);
+		template_matrix(const Int rows, const Int cols, const MPI_Comm comm = MPI_COMM_WORLD);
+		template_matrix(template_matrix&& other);
+		template_matrix(const template_matrix& other);
+		virtual ~template_matrix();
+
+		// Getters
+		msize row_size() const;
+		msize col_size() const;
+		// Setters
+		void row_set(const msize rows);
+		void col_set(const msize cols);
 	};
 }
+ 
