@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "dense_matrix.h"
 
 namespace math
@@ -76,7 +77,7 @@ namespace math
 	}
 
 	template<typename Float, typename Int>
-	dense_matrix & dense_matrix<Float, Int>::operator=(dense_matrix && other)
+	dense_matrix<Float, Int> & dense_matrix<Float, Int>::operator=(dense_matrix && other)
 	{
 		this->comm_ = other.comm_;
 		this->row_size_ = other.row_size_;
@@ -88,7 +89,7 @@ namespace math
 		return *this;
 	}
 	template<typename Float, typename Int>
-	dense_matrix & dense_matrix<Float, Int>::operator=(const dense_matrix & other)
+	dense_matrix<Float, Int> & dense_matrix<Float, Int>::operator=(const dense_matrix & other)
 	{
 		this->comm_ = other.comm_;
 		this->row_size_ = other.row_size_;

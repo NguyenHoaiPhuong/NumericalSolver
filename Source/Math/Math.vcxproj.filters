@@ -33,6 +33,12 @@
     <ClInclude Include="dense_matrix.h">
       <Filter>Matrix</Filter>
     </ClInclude>
+    <ClInclude Include="operation.h">
+      <Filter>Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Matrix</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -48,6 +54,9 @@
       <Filter>Matrix</Filter>
     </ClCompile>
     <ClCompile Include="dense_matrix.cpp">
+      <Filter>Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.cpp">
       <Filter>Matrix</Filter>
     </ClCompile>
   </ItemGroup>

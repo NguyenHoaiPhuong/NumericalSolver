@@ -1,5 +1,5 @@
 #pragma once
-#include <memory>
+#include <vector>
 #include "base_matrix.h"
 
 namespace math
@@ -27,7 +27,7 @@ namespace math
 		dense_matrix(const dense_matrix& other);
 
 		dense_matrix& operator=(dense_matrix&& other);
-		dense_matrix& operator=(const dense_matrix&& other);
+		dense_matrix& operator=(const dense_matrix& other);
 	};
 	
 }
