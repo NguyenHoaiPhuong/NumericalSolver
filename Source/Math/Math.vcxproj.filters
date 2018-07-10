@@ -59,5 +59,8 @@
     <ClCompile Include="matrix.cpp">
       <Filter>Matrix</Filter>
     </ClCompile>
+    <ClCompile Include="operation.cpp">
+      <Filter>Matrix</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
