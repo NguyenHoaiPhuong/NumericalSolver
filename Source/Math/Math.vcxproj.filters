@@ -13,6 +13,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Operations">
+      <UniqueIdentifier>{a9d71d74-147e-47da-99c1-5abcbdf06585}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,20 +27,26 @@
     <ClInclude Include="targetver.h">
       <Filter>Default</Filter>
     </ClInclude>
-    <ClInclude Include="msize.h">
-      <Filter>Matrix</Filter>
-    </ClInclude>
     <ClInclude Include="base_matrix.h">
       <Filter>Matrix</Filter>
     </ClInclude>
     <ClInclude Include="dense_matrix.h">
       <Filter>Matrix</Filter>
     </ClInclude>
-    <ClInclude Include="operation.h">
-      <Filter>Matrix</Filter>
-    </ClInclude>
     <ClInclude Include="matrix.h">
       <Filter>Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix_def.h">
+      <Filter>Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="echo.h">
+      <Filter>Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="operation.h">
+      <Filter>Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="assign.h">
+      <Filter>Operations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,17 +59,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Default</Filter>
     </ClCompile>
-    <ClCompile Include="base_matrix.cpp">
-      <Filter>Matrix</Filter>
-    </ClCompile>
-    <ClCompile Include="dense_matrix.cpp">
-      <Filter>Matrix</Filter>
-    </ClCompile>
     <ClCompile Include="matrix.cpp">
       <Filter>Matrix</Filter>
     </ClCompile>
-    <ClCompile Include="operation.cpp">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Math.def">
       <Filter>Matrix</Filter>
-    </ClCompile>
+    </None>
   </ItemGroup>
 </Project>

@@ -3,9 +3,18 @@
 #include <unordered_map>
 #include <typeinfo>
 
+/*************************** INTRODUCTION *******************************/
+/* factory class: a family of all specific factory<OPERATION> class		*/
+/* factory<OPERATION>: Singleton partern								*/
+/* factory<OPERATION> & operation<R, Name, OArgs>: Observer partern		*/
+/* implementation<O<R, Name, OArgs...>, IArgs...>: O<R, Name, OArgs...> */
+/************************************************************************/
+
+
+// Singleton operation factory
 namespace op
-{
-	// Singleton operation factory
+{	
+	// Declaration
 	template<class OPERATION>
 	class factory
 	{
@@ -101,7 +110,7 @@ namespace op
 			map_.insert(make_pair(hash, A));
 		}
 
-		// Return an operation by arguments' types
+		// Return the operation by arguments' types
 		template<class... Ts>
 		OPERATION* operation(Ts&... ts)
 		{
@@ -118,20 +127,51 @@ namespace op
 			return instance;
 		}
 	};
+
+	// Definition
+	template<class OPERATION>
+	factory<OPERATION>::factory()
+	{
+		map_ = {};
+	}
+
+	template<class OPERATION>
+	std::string factory<OPERATION>::to_hex(size_t i)
+	{
+		std::ostringstream oss;
+		oss << std::setfill('0') << std::setw(16) << std::hex << i;
+		return oss.str();
+	}
 }
 
+// Operation Interface declaration
 namespace op
 {
+	// R: return type, such as void / int / matrix /...
+	// Name: 
+	// OArgs:	Output arguments
+	// Example:
 	template <typename R, class Name, typename... OArgs>
 	class operation
 	{
 	public:
 		// Destructor
-		virtual ~operation();
+		virtual ~operation() {}
 
 		virtual R operator()(OArgs&...) = 0;
 
-		static R perform(OArgs&...args);		
+		static R perform(OArgs&...args)
+		{
+			operation<R, Name, OArgs...>* impl = factory< operation<R, Name, OArgs...> >::get().operation(args...);
+			if (impl)
+			{
+				return (*impl)(args...);
+			}
+			else
+			{
+				throw std::runtime_error("Unable to locate implementation!!!");
+			}
+		}
 	};
 }
 
@@ -179,12 +219,15 @@ namespace op
 	};
 }
 
-
+// Implementation class
 namespace op
 {
+	// O: Operation
+	// IArgs: Input Arguments
 	template <typename O, typename... IArgs>
 	class implementation : public O {};
 
+	// R, Name, OArgs: Input types for Operation O
 	template <typename R, class Name, typename... OArgs, template<class, typename...> class O, typename... IArgs>
 	class implementation<O<R, Name, OArgs...>, IArgs...> : public O<R, Name, OArgs...>
 	{
@@ -192,17 +235,27 @@ namespace op
 		static implementation<O<R, Name, OArgs...>, IArgs...> _instance;
 		implementation()
 		{
-			if (type_convert_t<OArgs...>::template valid<IArgs...>())
+			if (type_convert<OArgs...>::template valid<IArgs...>())
 			{
-				factory_t<O<R, Name, OArgs...>>::get().template reg<IArgs...>(this);
+				factory<O<R, Name, OArgs...>>::get().template reg<IArgs...>(this);
 			}
 			else
 			{
-				throw std::runtime_error(util::str("Invalid operation registration of : ", util::demangle(typeid(this).name())));
+				throw std::runtime_error("Invalid operation registration!!!");
 			}
 		}
 	public:
 		static implementation<O<R, Name, OArgs...>, IArgs...>& get() { return _instance; };
 		virtual R operator()(OArgs&...);
 	};
+
+	template <typename R, typename Name, typename... OArgs, template<class, typename...> class O, typename... IArgs>
+	implementation<O<R, Name, OArgs...>, IArgs...> implementation<O<R, Name, OArgs...>, IArgs...>::_instance = implementation();
+
+
+#  define __implementation_name(a,b) a ## b
+#  define __implementation_def(op, ...) implementation< op, __VA_ARGS__ >
+#  define __implementation_ex(rtn, op, cnt, impl) impl __implementation_name(op,cnt) = impl::get(); template<> rtn impl
+#  define __implementation(rtn, op, ...) __implementation_ex( rtn, op, __COUNTER__, __implementation_def(op,__VA_ARGS__) )
 }
+

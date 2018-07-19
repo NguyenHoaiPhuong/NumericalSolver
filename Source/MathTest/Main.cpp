@@ -6,6 +6,9 @@
 #include <cstdarg>
 #include "mpi.h"
 
+#include "../Math/dense_matrix.h"
+#include "../Math/assign.h"
+
 void TestMPI(int argc, char* argv[])
 {
 	MPI_Init(&argc, &argv);
@@ -77,6 +80,10 @@ void TestHex2String()
 #pragma endregion
 
 #pragma region TestTypeInfo
+struct A {};
+struct B : public A {};
+struct C : public A {};
+
 template<typename T>
 struct hash_by_type
 {
@@ -86,14 +93,18 @@ struct hash_by_type
 	}
 };
 template<typename T>
+struct hash_by_type<std::vector<T>>
+{
+	std::string operator()()
+	{
+		return "V" + hash_by_type<T>()();
+	}
+};
+template<typename T>
 std::string hash_by_variable(T& t)
 {
 	return to_hex(typeid(t).hash_code());
 }
-
-struct A{};
-struct B : public A {};
-struct C : public A {};
 
 using TypeInfoRef = std::reference_wrapper<const std::type_info>;
 struct Hasher {
@@ -113,7 +124,6 @@ void TestTypeInfo()
 	std::unordered_map<TypeInfoRef, std::string, Hasher, EqualTo> typenames;
 	typenames[typeid(int)] = "int";
 	typenames[typeid(double)] = "double";
-	typenames[typeid(float)] = "float";
 	typenames[typeid(A)] = "A";
 	typenames[typeid(B)] = "B";
 	typenames[typeid(C)] = "C";
@@ -127,31 +137,31 @@ void TestTypeInfo()
 	double d;
 	std::cout << typeid(d).name() << std::endl;
 	std::cout << "Type of d is " << typenames[typeid(d)] << std::endl;
-	std::cout << hash_by_type<double>()() << std::endl;
-	std::cout << "---------------------------------" << std::endl;
-
-	float f;
-	std::cout << typeid(f).name() << std::endl;
-	std::cout << "Type of f is " << typenames[typeid(f)] << std::endl;
-	std::cout << hash_by_type<float>()() << std::endl;
+	std::cout << "Hash by type: " << hash_by_type<double>()() << std::endl;
+	std::cout << "Hash by variable: " << hash_by_variable<double>(d) << std::endl;
 	std::cout << "---------------------------------" << std::endl;
 
 	A a;
 	std::cout << typeid(a).name() << std::endl;
 	std::cout << "Type of a is " << typenames[typeid(a)] << std::endl;
-	std::cout << hash_by_variable<A>(a) << std::endl;
+	std::cout << "Hash by type: " << hash_by_type<A>()() << std::endl;
+	std::cout << "Hash by variable: " << hash_by_variable<A>(a) << std::endl;
 	std::cout << "---------------------------------" << std::endl;
 
-	A* b = new B();
+	B* b = new B();
 	std::cout << typeid(*b).name() << std::endl;
 	std::cout << "Type of b is " << typenames[typeid(*b)] << std::endl;
-	std::cout << hash_by_variable<A>(*b) << std::endl;
+	std::cout << "Hash by type: " << hash_by_type<B>()() << std::endl;
+	std::cout << "Hash by variable: " << hash_by_variable<A>(*b) << std::endl;
 	std::cout << "---------------------------------" << std::endl;
 
 	A* c = new C();
 	std::cout << typeid(*c).name() << std::endl;
 	std::cout << "Type of c is " << typenames[typeid(*c)] << std::endl;
-	std::cout << hash_by_variable<A>(*c) << std::endl;
+	std::cout << "Hash by variable: " << hash_by_variable<A>(*c) << std::endl;
+	std::cout << "---------------------------------" << std::endl;
+
+	std::cout << "Hash by type: " << hash_by_type<std::vector<double>>()() << std::endl;
 	std::cout << "---------------------------------" << std::endl;
 }
 #pragma endregion
@@ -189,6 +199,49 @@ void TestVariadicFunction()
 }
 #pragma endregion
 
+#pragma region Matrix
+
+using namespace math;
+void TestDenseMatrix(int argc, char* argv[])
+{
+	MPI_Init(&argc, &argv);
+	MPI_Comm comm = MPI_COMM_WORLD;
+	
+	int nrows = 5;
+	int ncols = 6;
+	std::unique_ptr<double[]> mtx = std::make_unique<double[]>(nrows * ncols);
+	for (size_t i = 0; i < nrows * ncols; i++)
+	{
+		mtx[i] = i + 1;
+	}	
+	dense_matrix<double, int> akagi(MATRIX_SORT::COLUMN, MATRIX_SYMMETRY::SYMM_NONE, nrows, ncols, comm);
+	
+	MPI_Finalize();	
+}
+
+void TestAssignFunc(int argc, char* argv[])
+{
+	MPI_Init(&argc, &argv);
+	MPI_Comm comm = MPI_COMM_WORLD;
+
+	int nrows = 5;
+	int ncols = 6;
+	std::unique_ptr<double[]> mtx1 = std::make_unique<double[]>(nrows * ncols);
+	std::unique_ptr<double[]> mtx2 = std::make_unique<double[]>(nrows * ncols);
+	for (size_t i = 0; i < nrows * ncols; i++)
+	{
+		mtx1[i] = i + 1;
+		mtx2[i] = i * 2 + 1;
+	}
+	dense_matrix<double, int> akagi(MATRIX_SORT::COLUMN, MATRIX_SYMMETRY::SYMM_NONE, nrows, ncols, mtx1.get(), comm);
+	dense_matrix<double, int> yushin(MATRIX_SORT::COLUMN, MATRIX_SYMMETRY::SYMM_NONE, nrows, ncols, mtx2.get(), comm);
+
+	assign(akagi, yushin);
+
+	MPI_Finalize();
+}
+
+#pragma endregion
 
 int main(int argc, char* argv[])
 {
@@ -196,7 +249,9 @@ int main(int argc, char* argv[])
 	//TestTemplateFunctions();
 	//TestHex2String();
 	//TestTypeInfo();
-	TestVariadicFunction();
+	//TestVariadicFunction();
+	//TestDenseMatrix(argc, argv);
+	
 
 	getchar();
 
