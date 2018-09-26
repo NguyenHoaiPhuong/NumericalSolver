@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -184,10 +184,13 @@
     <ClInclude Include="assign.h" />
     <ClInclude Include="base_matrix.h" />
     <ClInclude Include="dense_matrix.h" />
+    <ClInclude Include="dense_matrix.hpp" />
     <ClInclude Include="echo.h" />
+    <ClInclude Include="echo.hpp" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="matrix_def.h" />
     <ClInclude Include="operation.h" />
+    <ClInclude Include="permutation_matrix.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

@@ -39,14 +39,23 @@
     <ClInclude Include="matrix_def.h">
       <Filter>Matrix</Filter>
     </ClInclude>
-    <ClInclude Include="echo.h">
-      <Filter>Operations</Filter>
-    </ClInclude>
     <ClInclude Include="operation.h">
       <Filter>Operations</Filter>
     </ClInclude>
     <ClInclude Include="assign.h">
       <Filter>Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="echo.hpp">
+      <Filter>Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="echo.h">
+      <Filter>Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="dense_matrix.hpp">
+      <Filter>Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="permutation_matrix.h">
+      <Filter>Matrix</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

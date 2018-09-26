@@ -1,6 +1,7 @@
 #pragma once
 #include "operation.h"
 #include "matrix.h"
+#include "dense_matrix.h"
 
 namespace op
 {
@@ -21,9 +22,12 @@ namespace op
 	__implementation(void, assign_operation, const null_matrix, null_matrix)::operator()(const base_matrix& A, base_matrix& B) {}
 
 	__implementation(void, assign_operation, const dense_matrix<double, int>, dense_matrix<double, int>)
-		::operator()(const base_matrix& A, base_matrix& B) {
+		::operator()(const base_matrix& A, base_matrix& B) 
+	{
 		const dense_matrix<double, int>& a = static_cast<const dense_matrix<double, int>&>(A);
 		dense_matrix<double, int>& b = static_cast<dense_matrix<double, int>&>(B);
+		std::cout << "Assign\n";
+		getchar();
 		/*int rank = 0;
 		mpi::comm_rank(a.communicator_, &rank);
 		if (rank != __MASTER_RANK)

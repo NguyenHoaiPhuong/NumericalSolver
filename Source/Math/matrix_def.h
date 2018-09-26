@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 
+# define __MASTER_RANK	0
 namespace math
 {
 	typedef size_t msize;	// Matrix size
@@ -9,20 +10,19 @@ namespace math
 	{
 		TYPE_NONE = 0,
 		DENSE,
-		SPARSE
+		SPARSE,
+		PERMUTATION
 	};
 
 	enum MATRIX_SORT
-	{
-		SORT_NONE = 0,
-		COLUMN,
+	{		
+		COLUMN = 0,
 		ROW
 	};
 
 	enum MATRIX_SYMMETRY
 	{
-		SYMM_NONE = 0,
-		ASYMMETRIC,
+		NONE,
 		SYMMETRIC
 	};
 }

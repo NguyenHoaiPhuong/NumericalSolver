@@ -39,8 +39,7 @@ namespace math
 		// Constructor and Destructor
 		template_matrix(const MPI_Comm comm = MPI_COMM_WORLD);
 		template_matrix(const Int rows, const Int cols, const MPI_Comm comm = MPI_COMM_WORLD);
-		template_matrix(const MATRIX_TYPE mtype, MATRIX_SORT msort, MATRIX_SYMMETRY msymm,
-						const Int rows, const Int cols, const MPI_Comm comm = MPI_COMM_WORLD);
+		template_matrix(const Int rows, const Int cols, const MATRIX_TYPE mtype, MATRIX_SORT msort, MATRIX_SYMMETRY msymm, const MPI_Comm comm = MPI_COMM_WORLD);
 		template_matrix(template_matrix&& other);
 		template_matrix(const template_matrix& other);
 		virtual ~template_matrix();
@@ -83,11 +82,11 @@ namespace math
 	}
 	MATRIX_SORT base_matrix::matrix_sort() const
 	{
-		return MATRIX_SORT::SORT_NONE;
+		return MATRIX_SORT::COLUMN;
 	}
 	MATRIX_SYMMETRY base_matrix::matrix_symmetry() const
 	{
-		return MATRIX_SYMMETRY::SYMM_NONE;
+		return MATRIX_SYMMETRY::NONE;
 	}
 }
 
@@ -100,20 +99,19 @@ namespace math
 		: base_matrix(comm), row_size_(0), col_size_(0)
 	{
 		mtype_ = MATRIX_TYPE::TYPE_NONE;
-		msort_ = MATRIX_SORT::SORT_NONE;
-		msymm_ = MATRIX_SYMMETRY::SYMM_NONE;
+		msort_ = MATRIX_SORT::COLUMN;
+		msymm_ = MATRIX_SYMMETRY::NONE;
 	}
 	template<typename Float, typename Int>
 	template_matrix<Float, Int>::template_matrix(const Int rows, const Int cols, const MPI_Comm comm)
 		: base_matrix(comm), row_size_(rows), col_size_(cols)
 	{
 		mtype_ = MATRIX_TYPE::TYPE_NONE;
-		msort_ = MATRIX_SORT::SORT_NONE;
-		msymm_ = MATRIX_SYMMETRY::SYMM_NONE;
+		msort_ = MATRIX_SORT::COLUMN;
+		msymm_ = MATRIX_SYMMETRY::NONE;
 	}
 	template<typename Float, typename Int>
-	template_matrix<Float, Int>::template_matrix(const MATRIX_TYPE mtype, MATRIX_SORT msort, MATRIX_SYMMETRY msymm,
-		const Int rows, const Int cols, const MPI_Comm comm)
+	template_matrix<Float, Int>::template_matrix(const Int rows, const Int cols, const MATRIX_TYPE mtype, MATRIX_SORT msort, MATRIX_SYMMETRY msymm, const MPI_Comm comm)
 		: base_matrix(comm), row_size_(rows), col_size_(cols)
 		, mtype_(mtype), msort_(msort), msymm_(msymm)
 	{

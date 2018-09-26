@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <sstream>
 #include <unordered_map>
 #include <typeinfo>
 
@@ -14,20 +15,34 @@
 // Singleton operation factory
 namespace op
 {	
-	// Declaration
+	/* Template class factory 
+	Function: To declare and define a family of factory class. Each factory<OPERATION> class 
+	will hold the specific family OPERATION class.
+	Precondition: None
+	Postcondition: Create the factory<OPERATION>*/
 	template<class OPERATION>
 	class factory
 	{
 	private:
+		/* Types of arguments of the OPERATION will be converted into std::string and united.
+		Then, map_ will store the string of united arguments' types and the pointer of OPERATION
+		For example:	operation echo(dense_matrix A, sparse_matrix B, permutation_matrix C)
+						argument types: dense_matrix + sparse_matrix + permutation_matrix */
 		std::unordered_map<std::string, OPERATION*> map_;
 
-		// Constructor
-		factory();
+		/* Function: Define the constructor */
+		factory() {	map_ = {}; }
 
-		// Convert a hex to string
-		static std::string to_hex(size_t i);
+		/* Function: Convert an integer into string of hex type.
+		For example: 10 --> "A", 100 --> "64", 171 --> "AB" */
+		static std::string to_hex(size_t i)
+		{
+			std::ostringstream oss;
+			oss << std::setfill('0') << std::setw(16) << std::hex << i;
+			return oss.str();
+		}
 
-		// Type info
+		/* Function: Return the string of data type ' code */
 		template<typename T>
 		struct hash_by_type 
 		{ 
@@ -127,30 +142,15 @@ namespace op
 			return instance;
 		}
 	};
-
-	// Definition
-	template<class OPERATION>
-	factory<OPERATION>::factory()
-	{
-		map_ = {};
-	}
-
-	template<class OPERATION>
-	std::string factory<OPERATION>::to_hex(size_t i)
-	{
-		std::ostringstream oss;
-		oss << std::setfill('0') << std::setw(16) << std::hex << i;
-		return oss.str();
-	}
 }
 
 // Operation Interface declaration
 namespace op
 {
 	// R: return type, such as void / int / matrix /...
-	// Name: 
-	// OArgs:	Output arguments
-	// Example:
+	// Name: Name of the father operation class, such as ASSIGN_OPERATION
+	// OArgs:	Output arguments, such as dense_matrix / sparse_matrix
+	// Example: operation<void, ASSIGN_OPERATION, const math::base_matrix, math::base_matrix>
 	template <typename R, class Name, typename... OArgs>
 	class operation
 	{
@@ -178,7 +178,8 @@ namespace op
 namespace op
 {
 	template <typename... OArgs>
-	class type_convert {
+	class type_convert
+	{
 		template<bool...> struct bool_pack;
 		template<bool... b>
 		using all_true = std::is_same<bool_pack<true, b...>, bool_pack<b..., true>>;
