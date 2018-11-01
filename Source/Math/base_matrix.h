@@ -39,7 +39,7 @@ namespace math
 		// Constructor and Destructor
 		template_matrix(const MPI_Comm comm = MPI_COMM_WORLD);
 		template_matrix(const Int rows, const Int cols, const MPI_Comm comm = MPI_COMM_WORLD);
-		template_matrix(const Int rows, const Int cols, const MATRIX_TYPE mtype, MATRIX_SORT msort, MATRIX_SYMMETRY msymm, const MPI_Comm comm = MPI_COMM_WORLD);
+		template_matrix(const Int rows, const Int cols, const MATRIX_TYPE mtype, const MATRIX_SORT msort, const MATRIX_SYMMETRY msymm, const MPI_Comm comm = MPI_COMM_WORLD);
 		template_matrix(template_matrix&& other);
 		template_matrix(const template_matrix& other);
 		virtual ~template_matrix();
@@ -50,9 +50,13 @@ namespace math
 		MATRIX_TYPE			matrix_type() const;
 		MATRIX_SORT			matrix_sort() const;
 		MATRIX_SYMMETRY		matrix_symmetry() const;
+
 		// Setters
-		void row_set(const msize rows);
-		void col_set(const msize cols);
+		virtual void row_set(const msize rows);
+		virtual void col_set(const msize cols);
+		virtual void matrix_type_set(const MATRIX_TYPE mtype);
+		virtual void matrix_sort_set(const MATRIX_SORT msort);
+		virtual void matrix_symmetry_set(const MATRIX_SYMMETRY msymm);
 	};
 }
  
@@ -111,7 +115,7 @@ namespace math
 		msymm_ = MATRIX_SYMMETRY::NONE;
 	}
 	template<typename Float, typename Int>
-	template_matrix<Float, Int>::template_matrix(const Int rows, const Int cols, const MATRIX_TYPE mtype, MATRIX_SORT msort, MATRIX_SYMMETRY msymm, const MPI_Comm comm)
+	template_matrix<Float, Int>::template_matrix(const Int rows, const Int cols, const MATRIX_TYPE mtype, const MATRIX_SORT msort, const MATRIX_SYMMETRY msymm, const MPI_Comm comm)
 		: base_matrix(comm), row_size_(rows), col_size_(cols)
 		, mtype_(mtype), msort_(msort), msymm_(msymm)
 	{
@@ -170,5 +174,20 @@ namespace math
 	void template_matrix<Float, Int>::col_set(const msize cols)
 	{
 		col_size_ = cols;
+	}
+	template<typename Float, typename Int>
+	inline void template_matrix<Float, Int>::matrix_type_set(const MATRIX_TYPE mtype)
+	{
+		mtype_ = mtype;
+	}
+	template<typename Float, typename Int>
+	inline void template_matrix<Float, Int>::matrix_sort_set(const MATRIX_SORT msort)
+	{
+		msort_ = msort;
+	}
+	template<typename Float, typename Int>
+	inline void template_matrix<Float, Int>::matrix_symmetry_set(const MATRIX_SYMMETRY msymm)
+	{
+		msymm_ = msymm_;
 	}
 }

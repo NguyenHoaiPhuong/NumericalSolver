@@ -20,7 +20,7 @@ namespace math
 		dense_matrix(const Int rows, const Int cols, const MPI_Comm comm = MPI_COMM_WORLD);
 		dense_matrix(const Int rows, const Int cols, const MATRIX_SORT msort, const MATRIX_SYMMETRY msymm, const MPI_Comm comm = MPI_COMM_WORLD);
 
-		// Input data were stored in row - order std::vector<Float> mtx
+		// Input data were stored in column - order std::vector<Float> mtx
 		dense_matrix(const Int rows, const Int cols, const std::vector<Float>& mtx, const MATRIX_SORT msort = COLUMN, const MATRIX_SYMMETRY msymm = NONE, const MPI_Comm comm = MPI_COMM_WORLD);
 
 		// Equal value is applied to each member of the matrix
@@ -37,11 +37,15 @@ namespace math
 		// Copy constructor
 		dense_matrix(const dense_matrix& other);
 
+		// Operators
 		dense_matrix&	operator=(dense_matrix&& other);
 		dense_matrix&	operator=(const dense_matrix& other);
-
 		dense_matrix	operator+(const dense_matrix& other);
 		dense_matrix&	operator+=(const dense_matrix& other);
+
+		// Setters
+		void matrix_type_set(const MATRIX_TYPE mtype);
+		void matrix_data_set(const Float* mtx);
 	};
 }
 
@@ -366,5 +370,24 @@ namespace math
 
 		return *this;
 	}
-
+	template<typename Float, typename Int>
+	inline void dense_matrix<Float, Int>::matrix_type_set(const MATRIX_TYPE mtype)
+	{
+		_ASSERT(mtype == DENSE);
+	}
+	template<typename Float, typename Int>
+	inline void dense_matrix<Float, Int>::matrix_data_set(const Float * mtx)
+	{
+		msize ms;
+		if (this->msymm_ == MATRIX_SYMMETRY::SYMMETRIC)
+		{
+			_ASSERT(rows == cols);
+			ms = (msize)((this->row_size_ * this->row_size_ + this->row_size_) * 0.5);
+		}
+		else
+			ms = (msize)(this->row_size_ * this->col_size_);
+		this->matrix_.reset();
+		this->matrix_ = std::make_unique<Float[]>(ms);
+		memcpy(this->matrix_.get(), mtx, ms * sizeof(Float));
+	}
 }
